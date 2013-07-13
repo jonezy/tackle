@@ -1,0 +1,21 @@
+{
+  "name": "subsea-js",
+  "version": "0.0.0",
+  "description": "crawl sites with subsea",
+  "main": "index.js",
+  "bin": {
+    "tackle": "bin/tackle"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "= <=>",
+  "license": "BSD",
+  "dependencies": {
+    "cheerio": "~0.12.0",
+    "underscore": "~1.5.1",
+    "async": "~0.2.9",
+    "commander": "~1.3.0"
+  }
+}
