@@ -1,14 +1,17 @@
+var _ = require('underscore');
 var async = require('async');
+var cheerio = require('cheerio');
+var colors = require('colors');
 var http = require('http');
 var https = require('https');
-var cheerio = require('cheerio');
-var _ = require('underscore');
+var url = require('url');
+
 var urls = [];
 var rootDomain = '';
 
 module.exports = exports = Tackle = function(domain) {
   urls = [];
-  rootDomain = domain;
+  rootDomain = url.parse(domain).protocol + '//' + url.parse(domain).host + '/';
   console.log('Testing links on: ', domain);
   crawl(domain, function() {
     test();
@@ -27,11 +30,13 @@ var test = function() {
       cb();
     },
     function(cb) {
-      async.parallel(calls, function(err, results) {
+      console.log('Testing ', urls.length, ' urls.  This might take a minute');
+      async.parallelLimit(calls, 2, function(err, results) {
         if(err) {
           console.log(err);
           cb(err);
         }
+
         var total = urls.length;
         var checked = [];
         var failed = [];
@@ -43,8 +48,9 @@ var test = function() {
         console.log(total, 'Total');
         console.log(failed.length, 'Failed');
         _.each(failed, function(u) {
-          console.log(u.url);
+          console.error(u.url.red);
         });
+        console.log('---------');
       });
 
     }
@@ -99,6 +105,8 @@ var handleResponse = function(res, url, cb) {
     cb(null);
   });
   res.on('end', function() {
+    var status = url.isUp ? "ok".green : "down".red;
+    console.log('Checked: ', url.url, ':', status);
   });
 };
 
@@ -132,8 +140,9 @@ var collect = function($, sel) {
       if(href.slice(0,4) !== 'http')
         href = rootDomain + '' + href;
 
-      var isSecure = href.slice(0,5) === 'https';
-
+      // eventualll turn this into a whitelist op
+      if(href !== rootDomain + '#') {
+        var isSecure = href.slice(0,5) === 'https';
         var url = {
           'url': href,
           'isUp': false,
@@ -143,6 +152,7 @@ var collect = function($, sel) {
 
         if(find(url, urls) === undefined) 
           urls.push(url);
+      }
     }
   });
 };
