@@ -11,7 +11,10 @@ var rootDomain = '';
 
 module.exports = exports = Tackle = function(domain) {
   urls = [];
-  rootDomain = url.parse(domain).protocol + '//' + url.parse(domain).host + '/';
+  rootDomain = url.parse(domain).protocol + '//' + url.parse(domain).host;
+  if(rootDomain.indexOf('/', rootDomain.length - '/'.length) !== -1)
+    rootDomain = rootDomain + '/';
+
   console.log('Testing links on: ', domain);
   crawl(domain, function() {
     test();
@@ -37,6 +40,7 @@ var test = function() {
           cb(err);
         }
 
+        console.log(results.length);
         var total = urls.length;
         var checked = [];
         var failed = [];
@@ -84,7 +88,7 @@ var testUrl = function(url, cb) {
 };
 
 var handleResponse = function(res, url, cb) {
-  if(res.statusCode == 200) {
+  if(res.statusCode == 200 || res.statusCode === 301 || res.statusCode === 302) {
     url.isUp = true;
     url.checked = true;
     cb(null);
@@ -96,17 +100,16 @@ var handleResponse = function(res, url, cb) {
     cb(null);
   }
 
-  res.on('data', function(data) {
-
-  });
+  res.on('data', function(data) { });
   res.on('error', function(err) {
     url.isUp = false;
     url.checked = true;
     cb(null);
   });
   res.on('end', function() {
-    var status = url.isUp ? "ok".green : "down".red;
-    console.log('Checked: ', url.url, ':', status);
+    var msg = 'Checked: ' + url.url.green;
+    if(!url.isUp) msg = 'Checked: ' +  url.url.red;
+    console.log(msg);
   });
 };
 
@@ -137,21 +140,21 @@ var collect = function($, sel) {
   _.each(_.pairs(links), function(link) {
     if(link[1].attribs && (link[1].attribs.href || link[1].attribs.src)) {
       var href = link[1].attribs.href ? link[1].attribs.href : link[1].attribs.src;
-      if(href.slice(0,4) !== 'http')
-        href = rootDomain + '' + href;
+      if (href.slice(0,2) === '//') href = 'http:' + href;
+      if(href.slice(0,4) !== 'http') href = rootDomain + '' + href;
 
-      // eventualll turn this into a whitelist op
+      // eventually turn this into a whitelist op
       if(href !== rootDomain + '#') {
         var isSecure = href.slice(0,5) === 'https';
-        var url = {
+        var u = {
           'url': href,
           'isUp': false,
           'isSecure': isSecure,
           'checked': false
         };
 
-        if(find(url, urls) === undefined) 
-          urls.push(url);
+        if(find(u, urls) === undefined) 
+          urls.push(u);
       }
     }
   });
