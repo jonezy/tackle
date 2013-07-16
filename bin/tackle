@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
+var _ = require('underscore');
 var program = require('commander');
 var pkg = require('../package.json');
-var Tackle = require('../index');
+var Tackle = require('../lib/tackle');
 
 program
   .version(pkg.version);
@@ -13,7 +14,17 @@ program
   .action(function(args) {
     var href = args;
     if(href.indexOf('http://') < 0) href = 'http://' + href;
-      Tackle(href);
+      Tackle(href, function(report) {
+        console.log();
+        console.log('Report'.bold);
+        console.log('---------');
+        console.log(report.total, 'Total');
+        console.log(report.up.length, 'Up');
+        console.log(report.failed.length, 'Failed');
+        _.each(report.failed, function(u) {
+          console.error(u.url.red);
+        });
+      });
   });
 
 program.parse(process.argv);

@@ -2,12 +2,9 @@
   "name": "tackle",
   "version": "0.0.0",
   "description": "tackle sites",
-  "main": "index.js",
+  "main": "lib/tackle.js",
   "bin": {
     "tackle": "bin/tackle"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
