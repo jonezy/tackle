@@ -6,25 +6,31 @@ var pkg = require('../package.json');
 var Tackle = require('../lib/tackle');
 
 program
-  .version(pkg.version);
+  .version(pkg.version)
+  .option('-L --limit <int>', 'limit the number of pages to crawl to <int>')
+  .option('-I --internal ', 'only check links that come off the original domain pased in');
 
 
 program
-  .command('*')
-  .action(function(args) {
-    var href = args;
-    if(href.indexOf('http://') < 0) href = 'http://' + href;
-      Tackle(href, function(report) {
-        console.log();
-        console.log('Report'.bold);
-        console.log('---------');
-        console.log(report.total, 'Total');
-        console.log(report.up.length, 'Up');
-        console.log(report.failed.length, 'Failed');
-        _.each(report.failed, function(u) {
-          console.error(u.url.red);
-        });
-      });
+.command('*')
+.action(function(args) {
+  var href = args;
+  var opts = {};
+  if(program.limit) 
+    opts.limit = program.limit;
+
+
+  Tackle(href, opts, function(report) {
+    console.log();
+    console.log('Report (took %s to complete)'.bold, report.duration);
+    console.log('---------');
+    console.log(report.total, 'Total');
+    console.log(report.up.length, 'Up');
+    console.log(report.failed.length, 'Failed');
+    _.each(report.failed, function(u) {
+      console.error(u.url.red);
+    });
   });
+});
 
 program.parse(process.argv);
