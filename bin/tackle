@@ -8,7 +8,8 @@ var Tackle = require('../lib/tackle');
 program
   .version(pkg.version)
   .option('-L --limit <int>', 'limit the number of pages to crawl to <int>')
-  .option('-I --internal ', 'only check links that come off the original domain pased in');
+  .option('-T --type <type,type>', 'one or more html types that have href, rel or src attributes');
+  //.option('-I --internal ', 'only check links that come off the original domain pased in');
 
 
 program
@@ -19,6 +20,8 @@ program
   if(program.limit) 
     opts.limit = program.limit;
 
+  if(program.type)
+    opts.type = program.type;
 
   Tackle(href, opts, function(report) {
     console.log();
