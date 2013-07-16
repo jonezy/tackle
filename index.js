@@ -40,18 +40,12 @@ var test = function() {
           cb(err);
         }
 
-        console.log(results.length);
-        var total = urls.length;
-        var checked = [];
-        var failed = [];
-        _.each(urls, function(u) {
-          if(u.checked) checked.push(u); 
-          if(!u.isUp) failed.push(u);
-        });
+        var report = buildReport();
+
         console.log('---------');
-        console.log(total, 'Total');
-        console.log(failed.length, 'Failed');
-        _.each(failed, function(u) {
+        console.log(report.total, 'Total');
+        console.log(report.failed.length, 'Failed');
+        _.each(report.failed, function(u) {
           console.error(u.url.red);
         });
         console.log('---------');
@@ -136,7 +130,7 @@ var crawl = function(url, cb) {
 
 var collect = function($, sel) {
   var links = $(sel);
-  console.log('found ', links.length, ' of type ', sel);
+  console.log('found  %s  of type %s', links.length, sel);
   _.each(_.pairs(links), function(link) {
     if(link[1].attribs && (link[1].attribs.href || link[1].attribs.src)) {
       var href = link[1].attribs.href ? link[1].attribs.href : link[1].attribs.src;
@@ -165,4 +159,20 @@ var find = function(object, array) {
     if(o.url === object.url)
       return o;
   });
+};
+
+var buildReport = function() {
+  var total = urls.length;
+  var checked = [];
+  var failed = [];
+  _.each(urls, function(u) {
+    if(u.checked) checked.push(u); 
+    if(!u.isUp) failed.push(u);
+  });
+
+  return  {
+    'total':total,
+    'checked':checked,
+    'failed':failed
+  };
 };
