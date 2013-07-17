@@ -6,6 +6,9 @@
   "bin": {
     "tackle": "bin/tackle"
   },
+  "scripts": {
+    "test": "mocha -W -R nyan"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/jonezy/tackle.git"
