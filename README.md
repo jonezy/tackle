@@ -4,12 +4,16 @@ check links with tackle
 
     tackle www.google.com
 
-# what does it do?
+will collect and test any a, script or link tags on google.com and make
+sure they all issue a 200 response.
 
-it goes to the site you give it, get's all the links (a, script, css etc) and tests to see if they work.  
+# advanced usage
 
-That's it (for now).
+This will check up to 200 a, script or link's on cnn.com
 
-# what else will it do?
+    tackle --limit 200 www.cnn.com
 
-- crawl and test up to x number of pages (200 or config.json or cli --limit 200)
+This will check up to 50 (default) script and link tags on cnn.com
+
+    tackle --types script,link www.cnn.com
+
