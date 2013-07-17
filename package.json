@@ -1,6 +1,6 @@
 {
   "name": "tackle",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "tackle sites",
   "main": "lib/tackle.js",
   "bin": {
