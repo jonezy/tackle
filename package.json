@@ -7,7 +7,7 @@
     "tackle": "bin/tackle"
   },
   "scripts": {
-    "test": "mocha -W -R nyan"
+    "test": "mocha test/*.js -w -R nyan"
   },
   "repository": {
     "type": "git",
@@ -22,5 +22,9 @@
     "commander": "~1.3.0",
     "colors": "~0.6.0-1",
     "moment": "~2.1.0"
+  },
+  "devDependencies": {
+    "should": "~1.2.2",
+    "mocha": "~1.12.0"
   }
 }
