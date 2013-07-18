@@ -23,7 +23,8 @@ program
   if(program.type)
     opts.type = program.type;
 
-  Tackle(href, opts, function(report) {
+  var tackle = new Tackle(href, opts);
+  tackle.run(function(report) {
     console.log();
     console.log('Report (took %s to complete)'.bold, report.duration);
     console.log('---------');
