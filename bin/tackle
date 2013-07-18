@@ -37,3 +37,5 @@ program
 });
 
 program.parse(process.argv);
+
+exports = module.exports = program;
